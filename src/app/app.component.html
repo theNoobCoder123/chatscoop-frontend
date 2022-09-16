@@ -5,7 +5,7 @@
   Sign Up
 </button>
 <ul *ngIf="isAuthenticated() | async">
-  <li>{{ getUser() | json }}</li>
+  <li>{{ getUser() | async | json }}</li>
 </ul>
 <ng-container *ngIf="isAuthenticated() | async">
   <button (click)="logout()">
