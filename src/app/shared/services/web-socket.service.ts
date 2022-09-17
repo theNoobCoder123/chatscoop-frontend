@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Client, IFrame, Stomp } from '@stomp/stompjs';
+import { Client, IFrame, IStompSocket, Stomp, StompConfig } from '@stomp/stompjs';
 
 import * as SockJS from 'sockjs-client';
 
@@ -18,8 +18,13 @@ export class WebSocketService {
   }
 
   public connect(url: string) {
-    const socket = new SockJS(`http://localhost:8080/ws`);
-    this.stompClient = Stomp.over(socket);
+    // const socket = new SockJS(`http://192.168.0.109:4201/ws`);
+    let config = new StompConfig();
+    config.connectHeaders= {"Authorization": "xyz"};
+    this.stompClient = new Client(config);
+    this.stompClient.webSocketFactory= function () {
+      return new SockJS(`http://192.168.0.109:4201/ws?auth=${localStorage.getItem("token")}`) as IStompSocket;
+    };
     this.stompClient.configure({
       onConnect: (frame: IFrame) => {
         this.setConnected(true);
@@ -55,18 +60,22 @@ export class WebSocketService {
   }
 
   sendName() {
+    console.log("Helloooooo");
     this.stompClient.publish({
       destination: '/app/chat',
-      headers: {},
+      headers: {
+        // "Authorization": `Bearer ${localStorage.getItem("token")}`,
+      },
       body: JSON.stringify({
         senderId: localStorage.getItem("username"),
         senderName: "koi toh hai",
         recipientId: localStorage.getItem("username"),
         recipientName: "koi toh hai",
-        content: "Jo message",
+        content: "Dekho message",
         type: "CHAT",
       })
     });
+    console.log("Helloooooo x2");
   }
 
   showGreeting(message: any) {

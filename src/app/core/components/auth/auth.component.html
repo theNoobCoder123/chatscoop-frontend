@@ -1,6 +1,24 @@
-<div class="lds-ring">
+<!-- <div class="lds-ring">
     <div></div>
     <div></div>
     <div></div>
     <div></div>
-</div>
+</div> -->
+
+<button (click)="login()">
+    Login
+  </button>
+  <button (click)="signup()">
+    Sign Up
+  </button>
+  <ul *ngIf="isAuthenticated() | async">
+    <li>{{ getUser() | async | json }}</li>
+  </ul>
+  <ng-container *ngIf="isAuthenticated() | async">
+    <button (click)="saveToken()">
+      Save Token
+    </button>
+    <button (click)="logout()">
+      Log out
+    </button>
+  </ng-container>

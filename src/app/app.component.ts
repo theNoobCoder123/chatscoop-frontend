@@ -9,26 +9,4 @@ import { Observable } from 'rxjs/internal/Observable';
 })
 export class AppComponent {
   title = 'sendit';
-
-  constructor(private _auth: AuthService) {}
-
-  public isAuthenticated(): Observable<boolean> {
-    return this._auth.isAuthenticated$;
-  }
-
-  public getUser(): Observable<User | null | undefined> {
-    return this._auth.user$;
-  }
-
-  public login(): void {
-    this._auth.loginWithRedirect();
-  }
-
-  public signup(): void {
-    this._auth.loginWithRedirect({ screen_hint: 'signup' });
-  }
-
-  public logout() {
-    this._auth.logout()
-  }
 }
