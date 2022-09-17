@@ -9,13 +9,17 @@ const routes: Routes = [
   //   component: AppComponent,
   // },
   {
-    path: "login",
+    path: "",
     component: AuthComponent,
-  }
+  },
+  {
+    path: "chats",
+    loadChildren: () => import('./chats/chats.module').then(m => m.ChatsModule),
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class AppRoutingModule { }
