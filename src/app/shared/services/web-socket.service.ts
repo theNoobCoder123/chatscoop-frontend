@@ -33,7 +33,7 @@ export class WebSocketService {
         console.log("onConnect", frame);
         this.stompClient.subscribe(`/user/${localStorage.getItem("username")}/queue/messages`, (message: { body: string; ack: () => void; }) => {
           console.log(message.body);
-          this.showGreeting(JSON.parse(message.body).senderName);
+          this.showGreeting(JSON.parse(message.body));
           message.ack();
         });
         this.sendName();
@@ -59,23 +59,45 @@ export class WebSocketService {
     console.log('Disconnected!');
   }
 
-  sendName() {
-    console.log("Helloooooo");
+  sendMessage(
+    senderId: string,
+    senderName: string,
+    recipientId: string,
+    recipientName: string,
+    content: string,
+    type: number,
+  ) {
     this.stompClient.publish({
       destination: '/app/chat',
       headers: {
         // "Authorization": `Bearer ${localStorage.getItem("token")}`,
       },
       body: JSON.stringify({
-        senderId: localStorage.getItem("username"),
-        senderName: "koi toh hai",
-        recipientId: localStorage.getItem("username"),
-        recipientName: "koi toh hai",
-        content: "Dekho message",
-        type: "CHAT",
-      })
+        senderId: senderId,
+        senderName: senderName,
+        recipientId: recipientId,
+        recipientName: recipientName,
+        content: content,
+        type: type,
+      }),
     });
-    console.log("Helloooooo x2");
+  }
+
+  sendName() {
+    this.stompClient.publish({
+      destination: '/app/chat',
+      headers: {
+        // "Authorization": `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify({
+        senderId: localStorage.getItem("username") ?? "hrishi",
+        senderName: "Hrishi",
+        recipientId: "koibiju",
+        recipientName: "Koi Biju",
+        content: "Dekho message",
+        type: 0,
+      }),
+    });
   }
 
   showGreeting(message: any) {

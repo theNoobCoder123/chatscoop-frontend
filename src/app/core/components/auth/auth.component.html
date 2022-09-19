@@ -13,10 +13,17 @@
   </button>
   <ul *ngIf="isAuthenticated() | async">
     <li>{{ getUser() | async | json }}</li>
+    <!-- <li>{{ (getUser() | async)?.['username'] ?? "ok" }}</li> -->
   </ul>
   <ng-container *ngIf="isAuthenticated() | async">
+    <button type="button" routerLink="/chats">
+      See Chats
+    </button>
     <button (click)="saveToken()">
       Save Token
+    </button>
+    <button (click)="saveUserInfo()">
+      Save UserInfo
     </button>
     <button (click)="logout()">
       Log out
