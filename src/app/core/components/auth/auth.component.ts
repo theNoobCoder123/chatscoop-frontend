@@ -1,18 +1,31 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { AuthService, User } from '@auth0/auth0-angular';
+import { Subscriber, Subscription } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
 
 @Component({
   selector: 'app-auth',
   templateUrl: './auth.component.html',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   styleUrls: ['./auth.component.scss']
 })
-export class AuthComponent {
+export class AuthComponent implements OnDestroy {
 
-  constructor(private _auth: AuthService) {}
+  private _subscriptions: Subscription[];
+
+  constructor(private _auth: AuthService) {
+    this._subscriptions = [];
+  }
+
+  ngOnDestroy(): void {
+    this._subscriptions.forEach((subscription: Subscription) => {
+      subscription.unsubscribe();
+      console.log(subscription);
+    });
+  }
 
   public isAuthenticated(): Observable<boolean> {
     return this._auth.isAuthenticated$;
@@ -35,9 +48,17 @@ export class AuthComponent {
     this._auth.logout()
   }
 
+  public saveUserInfo() {
+    let temp = this._auth.user$.subscribe((data) => {
+      localStorage.setItem("username", data?.['username']);
+    });
+    this._subscriptions.push(temp);
+  }
+
   public saveToken() {
-    this._auth.getAccessTokenSilently().subscribe((token: string) => {
+    let temp = this._auth.getAccessTokenSilently().subscribe((token: string) => {
       localStorage.setItem("token", token);
     });
+    this._subscriptions.push(temp);
   }
 }
